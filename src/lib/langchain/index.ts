@@ -1,12 +1,20 @@
-import { PDFLoader } from "langchain/document_loaders/fs/pdf";
-import { Document } from "langchain/document";
-import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { HuggingFaceTransformersEmbeddings } from "@langchain/community/embeddings/hf_transformers";
+import { Document } from "langchain/document";
+import { PDFLoader } from "langchain/document_loaders/fs/pdf";
+import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
+
 import md5 from "md5";
 
 const hfEM = new HuggingFaceTransformersEmbeddings({
   modelName: "Xenova/all-MiniLM-L6-v2",
 });
+
+// const oAIEM = new OpenAIEmbeddings({
+//   openAIApiKey: process.env.OPENAI_API_KEY,
+//   batchSize: 512,
+//   modelName: "text-embedding-3-small",
+//   dimensions: 384,
+// });
 
 export async function loadDocuments(fileNames: string[]) {
   const docs = (

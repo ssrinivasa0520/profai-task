@@ -51,16 +51,16 @@ async function pipeline(fileKeys: string[], chatId: number) {
     console.log("Chat processed successfully");
   } catch (err) {
     console.log(err);
-    // await db
-    //   .update(chat)
-    //   .set({
-    //     status: "failed",
-    //   })
-    //   .where(eq(chat.id, chatId));
+    await db
+      .update(chat)
+      .set({
+        status: "failed",
+      })
+      .where(eq(chat.id, chatId));
   }
 }
 
-export async function POST(request: NextRequest, response: NextResponse) {
+export async function POST(request: NextRequest, _response: NextResponse) {
   const { userId } = auth();
   if (!userId) {
     return new NextResponse("Unauthorized", { status: 401 });
