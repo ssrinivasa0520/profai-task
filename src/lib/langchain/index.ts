@@ -16,11 +16,11 @@ const hfEM = new HuggingFaceTransformersEmbeddings({
 //   dimensions: 384,
 // });
 
-export async function loadDocuments(fileNames: string[]) {
+export async function loadDocuments(blobs: Blob[]) {
   const docs = (
     await Promise.all(
-      fileNames.map((fN) => {
-        const loader = new PDFLoader(fN, {
+      blobs.map((b) => {
+        const loader = new PDFLoader(b, {
           parsedItemSeparator: "",
         });
         return loader.load();

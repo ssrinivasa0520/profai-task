@@ -17,13 +17,13 @@ async function pipeline(fileKeys: string[], chatId: number) {
   try {
     console.log("Downloading files from S3");
 
-    const fileNames = await downloadFilesFromS3(fileKeys);
+    const fileBlobs = await downloadFilesFromS3(fileKeys);
 
     // console.log(fileNames);
 
     console.log("Loading documents from files");
 
-    const docs = await loadDocuments(fileNames);
+    const docs = await loadDocuments(fileBlobs);
 
     // console.log(docs);
 
