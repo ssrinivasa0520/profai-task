@@ -44,7 +44,12 @@ export async function deleteAllNamespaceVectors(
   namespace: string
 ) {
   const pineconeIndex = pinecone.Index(index);
-  return pineconeIndex.namespace(namespace).deleteAll();
+  return pineconeIndex
+    .namespace(namespace)
+    .deleteAll()
+    .then(() => {
+      `${namespace} vectors deleted`;
+    });
 }
 
 export default pinecone;

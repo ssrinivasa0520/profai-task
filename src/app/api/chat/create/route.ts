@@ -15,31 +15,31 @@ import { CreateChatValidationSchema } from "../_validation";
 
 async function pipeline(fileKeys: string[], chatId: number) {
   try {
-    console.log("Downloading files from S3");
+    console.log(`Chat ${chatId}: Downloading files from S3`);
 
-    const fileNames = await downloadFilesFromS3(fileKeys);
+    const fileBlobs = await downloadFilesFromS3(fileKeys);
 
     // console.log(fileNames);
 
-    console.log("Loading documents from files");
+    console.log(`Chat ${chatId}: Loading documents from files`);
 
-    const docs = await loadDocuments(fileNames);
+    const docs = await loadDocuments(fileBlobs);
 
     // console.log(docs);
 
-    console.log("Splitting documents");
+    console.log(`Chat ${chatId}: Splitting documents`);
 
     const splitDocs = await splitDocuments(docs);
 
-    console.log("Getting document embeddings");
+    console.log(`Chat ${chatId}: Getting document embeddings`);
 
     const vectors = await getDocumentEmbeddings(splitDocs);
 
-    console.log("Upserting vectors into Pinecone");
+    console.log(`Chat ${chatId}: Upserting vectors into Pinecone`);
 
     await upsertVectors(vectors, "chatpdf", chatId.toString());
 
-    console.log("Finished vector upsert");
+    console.log(`Chat ${chatId}: Finished vector upsert`);
 
     await db
       .update(chat)
@@ -48,19 +48,19 @@ async function pipeline(fileKeys: string[], chatId: number) {
       })
       .where(eq(chat.id, chatId));
 
-    console.log("Chat processed successfully");
+    console.log(`Chat ${chatId}: Chat live`);
   } catch (err) {
     console.log(err);
-    // await db
-    //   .update(chat)
-    //   .set({
-    //     status: "failed",
-    //   })
-    //   .where(eq(chat.id, chatId));
+    await db
+      .update(chat)
+      .set({
+        status: "failed",
+      })
+      .where(eq(chat.id, chatId));
   }
 }
 
-export async function POST(request: NextRequest, response: NextResponse) {
+export async function POST(request: NextRequest, _response: NextResponse) {
   const { userId } = auth();
   if (!userId) {
     return new NextResponse("Unauthorized", { status: 401 });

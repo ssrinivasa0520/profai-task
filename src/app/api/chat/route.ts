@@ -3,9 +3,10 @@ import { message } from "@/lib/db/schema";
 import { getTextEmbedding } from "@/lib/langchain";
 import { queryVectors } from "@/lib/pinecone";
 import { OpenAIStream, StreamingTextResponse } from "ai";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 import { ChatValidationSchema } from "./_validation";
+import { ZodError } from "zod";
 
 // export const runtime =
 //   process.env.NODE_ENV === "production" ? "edge" : undefined;
@@ -91,5 +92,8 @@ export async function POST(request: NextRequest) {
     return new StreamingTextResponse(stream);
   } catch (err) {
     console.log(err);
+    if (err instanceof ZodError) {
+      return NextResponse.json({ errors: err.errors }, { status: 400 });
+    }
   }
 }

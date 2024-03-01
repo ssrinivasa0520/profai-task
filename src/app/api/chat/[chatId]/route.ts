@@ -70,7 +70,7 @@ export async function DELETE(
 
     deleteAllNamespaceVectors("chatpdf", chatId.toString());
 
-    deleteS3Files(documentFileKeys);
+    await deleteS3Files(documentFileKeys);
 
     return new NextResponse("");
   } catch (err) {
