@@ -75,7 +75,7 @@ export async function deleteS3Files(fileKeys: string[]) {
     },
   });
 
-  await s3.send(command).then((_data) => {
+  return s3.send(command).then((_data) => {
     console.log(`Successfully deleted files from S3`);
   });
 }
